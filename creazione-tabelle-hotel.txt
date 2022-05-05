@@ -1,0 +1,76 @@
+Tabella rooms
+
+CREATE TABLE [dbo].[rooms]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [numero_stanza] SMALLINT NOT NULL, 
+    [piano_hotel] VARCHAR(30) NOT NULL, 
+    [numero_letti] TINYINT NOT NULL
+)
+
+tabella guests
+
+CREATE TABLE [dbo].[guests]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [nome_ospite] VARCHAR(30) NOT NULL, 
+    [cognome_ospite] VARCHAR(30) NOT NULL, 
+    [data_di_nascita] DATE NOT NULL, 
+    [numero_documento] VARCHAR(20) NOT NULL, 
+    [tipo_documento] VARCHAR(30) NOT NULL
+)
+
+tabella configurations
+
+CREATE TABLE [dbo].[configurations]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [titolo_configurazione] VARCHAR(30) NOT NULL, 
+    [descrizione_configurazione] VARCHAR(30) NOT NULL, 
+
+)
+
+tabella booking
+
+CREATE TABLE [dbo].[booking]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [id_configuration] INT NOT NULL, 
+    [importo_totale] DECIMAL(6, 2) NOT NULL, 
+    [durata_soggiorno] VARCHAR(30) NOT NULL, 
+    [numero_prenotazione] INT NOT NULL, 
+    CONSTRAINT [FK_booking_configurations] FOREIGN KEY ([id_configuration]) REFERENCES [configurations]([id])
+	
+)
+
+tabella payments
+
+CREATE TABLE [dbo].[payments]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [id_booking] INT NOT NULL, 
+    [status_pagamento] VARCHAR(20) NOT NULL, 
+    [metodo_di_pagamento] VARCHAR(50) NOT NULL, 
+    CONSTRAINT [FK_payments_bookings] FOREIGN KEY ([id_booking]) REFERENCES [bookings]([id])
+
+)
+
+tabella room_booking
+
+CREATE TABLE [dbo].[room_booking]
+(
+	[id_room] INT NOT NULL,
+    [id_booking] INT NOT NULL, 
+    CONSTRAINT [FK_room_booking_rooms] FOREIGN KEY ([id_room]) REFERENCES [rooms]([id]), 
+    CONSTRAINT [FK_room_booking_bookings] FOREIGN KEY ([id_booking]) REFERENCES [bookings]([id]) 
+)
+
+tabella booking_guest
+
+CREATE TABLE [dbo].[booking_guest]
+(
+	[id_booking] INT NOT NULL, 
+    [id_guest] INT NOT NULL, 
+    CONSTRAINT [FK_booking_guest_guests] FOREIGN KEY ([id_guest]) REFERENCES [guests]([id]), 
+    CONSTRAINT [FK_booking_guest_bookings] FOREIGN KEY ([id_booking]) REFERENCES [bookings]([id]) 
+)
